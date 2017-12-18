@@ -9,3 +9,7 @@ To use this program, call the python program schrod.py with your choice in input
 
 The lowest energy state is given by the eigenvector of the Hamiltonian matrix <Ψ|H|Ψ> corresponding with its smallest eigenvalue.
 
+Coverage and test passing can be tested by running:
+
+```python -m pytest```
+

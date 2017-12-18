@@ -3,11 +3,6 @@ import numpy as np
 import numpy.polynomial.legendre as L
 import numpy.linalg as linalg
 
-#basis functions
-def fourier(x):
-    '''fourier polynomials'''
-    return x**2
-
 #defaults
 C = 1.0
 V = 1.0
@@ -33,7 +28,7 @@ def hamiltonian(coefs, func=BASIS_FUNC, V=V, C=C):
         ham = -C*L.legder(L.legder(coefs)) + V*L.Legendre(coefs)
         return ham
 
-def inner_product():
+def inner_product(): #do I even need this?
     if BASIS_FUNC == 'legendre':
         pmat = np.zeros((BASIS_SIZE, BASIS_SIZE))
         for i in range(BASIS_SIZE):
@@ -49,6 +44,7 @@ def inner_product():
 
 
 def hamiltonian_matrix(BASIS_SIZE=BASIS_SIZE, BASIS_FUNC=BASIS_FUNC, DOMAIN=DOMAIN, C=C, V=V):
+    '''Calculates the hamiltonian matrix <psi|H|psi>'''
     if BASIS_FUNC == 'legendre':
         hmat = np.zeros((BASIS_SIZE, BASIS_SIZE))
         for i in range(BASIS_SIZE):
@@ -62,11 +58,10 @@ def hamiltonian_matrix(BASIS_SIZE=BASIS_SIZE, BASIS_FUNC=BASIS_FUNC, DOMAIN=DOMA
     return hmat
 
 def first_eigen(mat):
+    '''Calculates the lowest energy state (eigenvector corresponding to lowest eigenvalue)'''
     eigenvalues,eigenvectors = linalg.eig(mat)
     print('VALS',eigenvalues)
     print('VECS',eigenvectors)
-    print(min(eigenvalues))
-    print(eigenvectors[np.argmin(eigenvalues)])
     return eigenvectors[np.argmin(eigenvalues)]
 
 
@@ -76,6 +71,10 @@ def run(args):
     print('IPMAN',inner_product())
     print(hamiltonian_matrix(BASIS_SIZE=5))
     print('asdf',first_eigen(hamiltonian_matrix(BASIS_SIZE=5)))
+
+
+    answer = first_eigen(hamiltonian_matrix())
+    print('The coefficients of the basis set are ', answer)
 
 def main():
     args=get_arguments()
