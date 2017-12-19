@@ -43,11 +43,6 @@ def inner_product(): #do I even need this?
                 val = L.legval(DOMAIN[1],integ) - L.legval(DOMAIN[0],integ)
                 pmat[i,j] = val
 
-    if BASIS_FUNC == 'fourier':
-        pmat = np.zeros((BASIS_SIZE,BASIS_SIZE))
-        
-    return pmat
-
 
 
 def hamiltonian_matrix(BASIS_SIZE=BASIS_SIZE, BASIS_FUNC=BASIS_FUNC, DOMAIN=DOMAIN, C=C, V=V):
@@ -62,6 +57,16 @@ def hamiltonian_matrix(BASIS_SIZE=BASIS_SIZE, BASIS_FUNC=BASIS_FUNC, DOMAIN=DOMA
                 integ = L.legint(inside)
                 val = L.legval(DOMAIN[1],integ) - L.legval(DOMAIN[0],integ)
                 hmat[i,j] = val
+    if BASIS_FUNC == 'fourier':
+        a = DOMAIN[1] #restrict the domain to be symmetric about origin for simplicity
+        hmat = np.zeros((BASIS_SIZE,BASIS_SIZE))
+        for i in range(BASIS_SIZE):
+            for j in range(BASIS_SIZE):
+                p1 = 2*V*np.sin(a*j)/j #cos V0 term
+                p2 = 0 #cos cos term cancels due to parity if i != j
+                if i==j:
+                    p2 = C*(j**2)*(a + np.sin(2*a*j)/(2*j))
+                hmat[i,j] = p1+p2
     return hmat
 
 def first_eigen(mat):
@@ -77,6 +82,7 @@ def run(args):
     print('HAMMY',list(hamiltonian([1])))
     print('HAMIL',hamiltonian((1,2,3), 'fourier', 1.5, 3))
     print(hamiltonian_matrix(BASIS_SIZE=5))
+    print(hamiltonian_matrix(5,'fourier',(-1,1),1,2))
     print('asdf',first_eigen(hamiltonian_matrix(BASIS_SIZE=5)))
 
 
