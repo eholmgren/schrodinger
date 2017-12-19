@@ -27,6 +27,9 @@ def hamiltonian(coefs, func=BASIS_FUNC, V=V, C=C):
     if func == 'legendre':
         ham = -C*L.legder(L.legder(coefs)) + V*L.Legendre(coefs)
         return ham
+    elif func == 'fourier':
+        ham = [V] + [(i**2)*C*coefs[i] for i in range(1,len(coefs))]
+        return ham
 
 def inner_product(): #do I even need this?
     if BASIS_FUNC == 'legendre':
@@ -39,6 +42,10 @@ def inner_product(): #do I even need this?
                 integ = L.legint(inside)
                 val = L.legval(DOMAIN[1],integ) - L.legval(DOMAIN[0],integ)
                 pmat[i,j] = val
+
+    if BASIS_FUNC == 'fourier':
+        pmat = np.zeros((BASIS_SIZE,BASIS_SIZE))
+        
     return pmat
 
 
@@ -68,7 +75,7 @@ def first_eigen(mat):
 
 def run(args):
     print('HAMMY',list(hamiltonian([1])))
-    print('IPMAN',inner_product())
+    print('HAMIL',hamiltonian((1,2,3), 'fourier', 1.5, 3))
     print(hamiltonian_matrix(BASIS_SIZE=5))
     print('asdf',first_eigen(hamiltonian_matrix(BASIS_SIZE=5)))
 
